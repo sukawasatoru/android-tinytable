@@ -14,26 +14,4 @@
  * limitations under the License.
  */
 
-apply plugin: 'com.android.library'
-
-android {
-    compileSdkVersion android_compile_sdk_version.toInteger()
-    buildToolsVersion android_build_tools_version
-
-    defaultConfig {
-        minSdkVersion android_min_sdk_version.toInteger()
-        targetSdkVersion android_target_sdk_version.toInteger()
-        versionCode 1
-        versionName '1.0.0'
-    }
-
-    buildTypes {
-        release {
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
-    }
-}
+apply plugin: 'java'
