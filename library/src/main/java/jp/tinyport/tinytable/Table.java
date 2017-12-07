@@ -16,14 +16,10 @@
 
 package jp.tinyport.tinytable;
 
-import android.database.DatabaseUtils;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
 import java.lang.reflect.Array;
+import java.util.Objects;
 
 public abstract class Table {
-    @NonNull
     public final String tableName;
 
     protected static final Type TEXT = new Type("TEXT");
@@ -36,15 +32,13 @@ public abstract class Table {
     protected static final Attribute NOT_NULL = new Attribute("NOT NULL");
     protected static final Attribute AUTOINCREMENT = new Attribute("AUTOINCREMENT");
 
-    @NonNull
     private final Column[] mColumns;
 
-    public Table(@NonNull String tableName, @NonNull Column column, @Nullable Column... rest) {
-        this.tableName = tableName;
-        mColumns = concat(column, rest);
+    public Table(String tableName, Column column, Column... rest) {
+        this.tableName = Objects.requireNonNull(tableName);
+        mColumns = concat(Objects.requireNonNull(column), rest);
     }
 
-    @NonNull
     public String createSql() {
         final StringBuilder builder = new StringBuilder();
         builder.append("CREATE TABLE ")
@@ -69,9 +63,8 @@ public abstract class Table {
         return builder.toString();
     }
 
-    @NonNull
     protected static Attribute DEFAULT(Object value) {
-        return new Attribute("DEFAULT " + DatabaseUtils.sqlEscapeString(value.toString()));
+        return new Attribute("DEFAULT " + escapeString(value.toString()));
     }
 
     /**
@@ -82,9 +75,7 @@ public abstract class Table {
      * @param tokens    an array objects to be joined
      * @see android.text.TextUtils#join(CharSequence, Object[])
      */
-    private static void join(
-            @NonNull StringBuilder builder,
-            @NonNull CharSequence delimiter, @NonNull Object[] tokens) {
+    private static void join(StringBuilder builder, CharSequence delimiter, Object[] tokens) {
         boolean firstTime = true;
         for (Object attribute : tokens) {
             if (firstTime) {
@@ -96,12 +87,11 @@ public abstract class Table {
         }
     }
 
-    @NonNull
-    private static <T> T[] concat(@NonNull T first, @Nullable T[] rest) {
+    private static <T> T[] concat(T first, T[] rest) {
         final T[] result =
                 (T[]) Array.newInstance(first.getClass(), rest == null ? 1 : rest.length + 1);
 
-        result[0] = first;
+        result[0] = Objects.requireNonNull(first);
 
         if (rest != null) {
             System.arraycopy(rest, 0, result, 1, rest.length);
@@ -110,25 +100,41 @@ public abstract class Table {
         return result;
     }
 
+    private static CharSequence escapeString(String string) {
+        final StringBuilder builder =
+                new StringBuilder(Objects.requireNonNull(string).length() + 2);
+        builder.append('`');
+        if (string.indexOf('`') == -1) {
+            builder.append('`');
+        } else {
+            for (int i = 0, l = string.length(); i < l; i++) {
+                final char c = string.charAt(i);
+                if (c == '`') {
+                    builder.append('`');
+                }
+
+                builder.append(c);
+            }
+        }
+
+        return builder;
+    }
+
     public static class Column {
-        @NonNull
         public final String name;
 
-        @NonNull
         private final Type mType;
-
-        @Nullable
         private final Attribute[] mAttributes;
 
-        public Column(@NonNull String name, @NonNull Type type, @Nullable Attribute... attribute) {
-            this.name = name;
-            mType = type;
+        public Column(String name, Type type, Attribute... attribute) {
+            this.name = Objects.requireNonNull(name);
+            mType = Objects.requireNonNull(type);
             mAttributes = attribute;
         }
     }
 
     public static class PrimaryKey extends Column {
-        public PrimaryKey(Object key , Object... rest) {
+        public PrimaryKey(Object key, Object... rest) {
             super(PRIMARY_KEY.toString(), new BracketType(key, rest));
         }
     }
@@ -155,14 +161,12 @@ public abstract class Table {
     }
 
     protected static class Attribute {
-        @NonNull
         private final String mAttribute;
 
-        private Attribute(@NonNull String attribute) {
-            mAttribute = attribute;
+        private Attribute(String attribute) {
+            mAttribute = Objects.requireNonNull(attribute);
         }
 
-        @NonNull
         @Override
         public String toString() {
             return mAttribute;
@@ -170,19 +174,18 @@ public abstract class Table {
     }
 
     private static class Type {
-        @NonNull
         private final String mName;
 
-        private Type(@NonNull String name) {
-            mName = name;
+        private Type(String name) {
+            mName = Objects.requireNonNull(name);
         }
 
-        @NonNull
         @Override
         public String toString() {
             return mName;
         }
     }
+
     private static class BracketType extends Type {
         BracketType(Object key, Object... rest) {
             super(createType(key, rest));
