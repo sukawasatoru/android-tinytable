@@ -14,25 +14,21 @@
  * limitations under the License.
  */
 
+import static org.gradle.api.tasks.wrapper.Wrapper.DistributionType
+
 buildscript {
     repositories {
-        google()
         jcenter()
-    }
-
-    dependencies {
-        // https://developer.android.com/studio/releases/gradle-plugin.html
-        classpath 'com.android.tools.build:gradle:3.0.1'
     }
 }
 
 allprojects {
     repositories {
-        google()
         jcenter()
     }
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+task wrapper(type: Wrapper) {
+    gradleVersion '4.1'
+    distributionType DistributionType.ALL
 }
