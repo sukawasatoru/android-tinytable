@@ -103,19 +103,20 @@ public abstract class Table {
     private static CharSequence escapeString(String string) {
         final StringBuilder builder =
                 new StringBuilder(Objects.requireNonNull(string).length() + 2);
-        builder.append('`');
-        if (string.indexOf('`') == -1) {
-            builder.append('`');
+        builder.append('\'');
+        if (string.indexOf('\'') == -1) {
+            builder.append(string);
         } else {
             for (int i = 0, l = string.length(); i < l; i++) {
                 final char c = string.charAt(i);
-                if (c == '`') {
-                    builder.append('`');
+                if (c == '\'') {
+                    builder.append('\'');
                 }
 
                 builder.append(c);
             }
         }
+        builder.append('\'');
 
         return builder;
     }
