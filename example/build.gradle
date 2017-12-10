@@ -14,9 +14,37 @@
  * limitations under the License.
  */
 
-include ':library'
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
 
-if ('true' != properties['tinytable.example.ignore']) {
-    include ':example'
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.0.1'
+    }
+}
 
+repositories {
+    google()
+    jcenter()
+}
+
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 26
+    buildToolsVersion '27.0.2'
+
+    defaultConfig {
+        applicationId 'jp.tinyport.tinytable.example'
+        minSdkVersion 21
+        targetSdkVersion 26
+        versionCode 1
+        versionName '0.1.0'
+    }
+}
+
+dependencies {
+    implementation project(':library')
 }
