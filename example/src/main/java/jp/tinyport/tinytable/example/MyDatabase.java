@@ -26,6 +26,7 @@ class MyDatabase extends SQLiteOpenHelper {
     final ExampleTable exampleTable;
     final Example2Table example2Table;
     final Example3Table example3Table;
+    final Example4Table example4Table;
 
     MyDatabase(Context context) {
         super(context, "example.db", null, 1);
@@ -33,6 +34,7 @@ class MyDatabase extends SQLiteOpenHelper {
         exampleTable = new ExampleTable();
         example2Table = new Example2Table();
         example3Table = new Example3Table(example2Table);
+        example4Table = new Example4Table();
     }
 
     @Override
@@ -40,6 +42,7 @@ class MyDatabase extends SQLiteOpenHelper {
         db.execSQL(exampleTable.createSql());
         db.execSQL(example2Table.createSql());
         db.execSQL(example3Table.createSql());
+        db.execSQL(example4Table.createSql());
     }
 
     @Override
@@ -83,6 +86,33 @@ class MyDatabase extends SQLiteOpenHelper {
             super("example3",
                     new Column("id", INTEGER, PRIMARY_KEY, NOT_NULL),
                     new ForeignKey("id", example2Table, Example2Table.ID)
+            );
+        }
+    }
+
+    static class Example4Table extends Table {
+        Example4Table() {
+            super("example4",
+                    new Column("ex_integer", INTEGER),
+                    new Column("ex_int", INT),
+                    new Column("ex_tinyint", TINYINT),
+                    new Column("ex_smallint", SMALLINT),
+                    new Column("ex_mediumint", MEDIUMINT),
+                    new Column("ex_bugint", BIGINT),
+                    new Column("ex_unsigned_bigint", UNSIGNED_BIG_INT),
+                    new Column("ex_int2", INT2),
+                    new Column("ex_int8", INT8),
+                    new Column("ex_text", TEXT),
+                    new Column("ex_clob", CLOB),
+                    new Column("ex_blob", BLOB),
+                    new Column("ex_real", REAL),
+                    new Column("ex_double", DOUBLE),
+                    new Column("ex_double_precision", DOUBLE_PRECISION),
+                    new Column("ex_float", FLOAT),
+                    new Column("ex_numeric", NUMERIC),
+                    new Column("ex_boolean", BOOLEAN),
+                    new Column("ex_date", DATE),
+                    new Column("ex_datetime", DATETIME)
             );
         }
     }
