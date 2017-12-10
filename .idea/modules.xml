@@ -3,9 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/android-tinytable.iml" filepath="$PROJECT_DIR$/android-tinytable.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/library/library.iml" filepath="$PROJECT_DIR$/.idea/modules/library/library.iml" group="library" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/library/library_main.iml" filepath="$PROJECT_DIR$/.idea/modules/library/library_main.iml" group="library" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/library/library_test.iml" filepath="$PROJECT_DIR$/.idea/modules/library/library_test.iml" group="library" />
+      <module fileurl="file://$PROJECT_DIR$/example/example.iml" filepath="$PROJECT_DIR$/example/example.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/library/library.iml" filepath="$PROJECT_DIR$/.idea/modules/library/library.iml" />
     </modules>
   </component>
 </project>
