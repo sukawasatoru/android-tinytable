@@ -17,8 +17,6 @@
 package jp.tinyport.tinytable.example;
 
 import android.app.Activity;
-import android.content.ContentValues;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -42,10 +40,8 @@ public class MainActivity extends Activity {
         log("[MainActivity] ExampleTable=%s", db.exampleTable.createSql());
         log("[MainActivity] Example2Table=%s", db.example2Table.createSql());
         log("[MainActivity] Example3Table=%s", db.example3Table.createSql());
-        final SQLiteDatabase database = db.getWritableDatabase();
-        final ContentValues values = new ContentValues();
-        values.put("id", 1);
-        database.insert(db.example3Table.tableName, null, values);
+        log("[MainActivity] Example4Table=%s", db.example4Table.createSql());
+        db.getWritableDatabase();
 
         log("[MainActivity] Bye");
         finish();
