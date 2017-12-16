@@ -51,7 +51,7 @@ public abstract class Table {
 
     public Table(String tableName, Column column, Column... rest) {
         this.tableName = Objects.requireNonNull(tableName);
-        mColumns = concat(Objects.requireNonNull(column), rest);
+        mColumns = concat(Objects.requireNonNull(column), Objects.requireNonNull(rest));
     }
 
     public String createSql() {
@@ -61,36 +61,25 @@ public abstract class Table {
                 .append('(');
 
         for (Column column : mColumns) {
-            builder.append(column.name)
-                    .append(' ')
-                    .append(column.mType);
-
-            if (column.mAttributes != null) {
-                builder.append(' ');
-                join(builder, " ", column.mAttributes);
-            }
-            builder.append(',');
+            builder.append(column.createStatement())
+                    .append(", ");
         }
 
         final int length = builder.length();
-        builder.replace(length - 1, length, ")");
+        builder.replace(length - 2, length, ")");
 
         return builder.toString();
+    }
+
+    public Column[] getColumns() {
+        return mColumns;
     }
 
     protected static Attribute DEFAULT(Object value) {
         return new Attribute("DEFAULT " + escapeString(value.toString()));
     }
 
-    /**
-     * The join utility to reduce {@link StringBuilder}.
-     *
-     * @param builder   the StringBuilder where you would like output to go
-     * @param delimiter the delimiter to be joined
-     * @param tokens    an array objects to be joined
-     * @see android.text.TextUtils#join(CharSequence, Object[])
-     */
-    private static void join(StringBuilder builder, CharSequence delimiter, Object[] tokens) {
+    private static void join(StringBuilder builder, char delimiter, Object[] tokens) {
         boolean firstTime = true;
         for (Object attribute : tokens) {
             if (firstTime) {
@@ -103,13 +92,13 @@ public abstract class Table {
     }
 
     private static <T> T[] concat(T first, T[] rest) {
+        final int restLength = Objects.requireNonNull(rest).length;
         final T[] result =
-                (T[]) Array.newInstance(first.getClass(), rest == null ? 1 : rest.length + 1);
+                (T[]) Array.newInstance(Objects.requireNonNull(first).getClass(), restLength + 1);
+        result[0] = first;
 
-        result[0] = Objects.requireNonNull(first);
-
-        if (rest != null) {
-            System.arraycopy(rest, 0, result, 1, rest.length);
+        if (0 < restLength) {
+            System.arraycopy(rest, 0, result, 1, restLength);
         }
 
         return result;
@@ -145,7 +134,24 @@ public abstract class Table {
         public Column(String name, Type type, Attribute... attribute) {
             this.name = Objects.requireNonNull(name);
             mType = Objects.requireNonNull(type);
-            mAttributes = attribute;
+            mAttributes = Objects.requireNonNull(attribute);
+        }
+
+        public String createAddSql(String tableName) {
+            return "ALTER TABLE " + Objects.requireNonNull(tableName) + " ADD " + createStatement();
+        }
+
+        private CharSequence createStatement() {
+            final StringBuilder builder = new StringBuilder(name)
+                    .append(' ')
+                    .append(mType);
+
+            if (0 < mAttributes.length) {
+                builder.append(' ');
+                join(builder, ' ', mAttributes);
+            }
+
+            return builder;
         }
     }
 
@@ -209,7 +215,7 @@ public abstract class Table {
 
         private static String createType(Object key, Object... rest) {
             final StringBuilder builder = new StringBuilder("(");
-            join(builder, ",", concat(key, rest));
+            join(builder, ',', concat(key, rest));
 
             return builder.append(")").toString();
         }
