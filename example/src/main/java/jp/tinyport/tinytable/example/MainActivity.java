@@ -17,10 +17,13 @@
 package jp.tinyport.tinytable.example;
 
 import android.app.Activity;
+import android.database.Cursor;
+import android.database.DatabaseUtils;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 
-import java.io.File;
+import jp.tinyport.tinytable.example.addcolumn.AddColumnDatabase;
 
 public class MainActivity extends Activity {
     @Override
@@ -29,19 +32,29 @@ public class MainActivity extends Activity {
         log("[MainActivity] Hello");
 
         final MyDatabase db = new MyDatabase(getApplicationContext());
-        final File dbFile = getDatabasePath(db.getDatabaseName());
-        if (dbFile.exists()) {
-            final boolean ret = dbFile.delete();
-            if (!ret) {
-                throw new AssertionError();
-            }
-        }
+        deleteDatabase(db.getDatabaseName());
 
         log("[MainActivity] ExampleTable=%s", db.exampleTable.createSql());
         log("[MainActivity] Example2Table=%s", db.example2Table.createSql());
         log("[MainActivity] Example3Table=%s", db.example3Table.createSql());
         log("[MainActivity] Example4Table=%s", db.example4Table.createSql());
         db.getWritableDatabase();
+
+        deleteDatabase(AddColumnDatabase.DATABASE_NAME);
+
+        final AddColumnDatabase addColumnDatabase = AddColumnDatabase.instance();
+        final SQLiteDatabase oldDb = addColumnDatabase.getDatabaseOld(this);
+        try (Cursor c = oldDb.query(addColumnDatabase.oldTable.tableName, null,
+                null, null, null, null, null)) {
+            log("[MainActivity] OldTable=%s", DatabaseUtils.dumpCursorToString(c));
+        }
+        oldDb.close();
+
+        final SQLiteDatabase latestDb = addColumnDatabase.getDatabase(this);
+        try (Cursor c = latestDb.query(addColumnDatabase.table.tableName, null,
+                null, null, null, null, null)) {
+            log("[MainActivity] newTable=%s", DatabaseUtils.dumpCursorToString(c));
+        }
 
         log("[MainActivity] Bye");
         finish();
