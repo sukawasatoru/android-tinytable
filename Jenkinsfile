@@ -16,7 +16,7 @@
 
 pipeline {
     agent {
-        label: 'android'
+        label 'android'
     }
 
     stages {
