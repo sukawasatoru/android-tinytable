@@ -38,7 +38,7 @@ pipeline {
                         -Dsonar.projectKey=android-tinytable \
                         -Dsonar.branch.name=${env.BRANCH_NAME} \
                         -Dsonar.verbose=true \
-                        sonarqube
+                        :sonarqube
                         """
                 }
             }
