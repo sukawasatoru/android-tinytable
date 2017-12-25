@@ -30,7 +30,7 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: '5f36d99d-2541-46a5-9ee1-94a9e2ea338e', variable: 'SONAR_LOGIN')]) {
                     sh """
-                        ./gradlew --info \
+                        ./gradlew --debug \
                         -Dsonar.organization=sukawasatoru-github \
                         -Dsonar.host.url=https://sonarcloud.io \
                         -Dsonar.login=${SONAR_LOGIN} \
